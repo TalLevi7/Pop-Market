@@ -14,11 +14,7 @@ function Home() {
   return (
     <>
       <header className="header">
-        <img
-          src="/banner.jpeg"
-          alt="Funko Pops Banner"
-          className="banner"
-        />
+        <img src="/images/banner.jpeg" alt="Funko Pops Banner" className="banner" />
       </header>
 
       <main>

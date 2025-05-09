@@ -6,7 +6,7 @@ function Navbar() {
   return (
     // <h1>NAVBAR</h1>
     <header className = "navbar">
-      <img src='./popmarketlogo.png' alt="Pop-Market Logo" className="logo" />
+      <img src='./images/popmarketlogo.png' alt="Pop-Market Logo" className="logo" />
       <ul>
         <li><Link to="/">Home</Link></li>
         <li><Link to="/market">Market</Link></li>

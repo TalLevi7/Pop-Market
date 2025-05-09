@@ -35,33 +35,37 @@ function Login() {
   };
 
   return (
-    <div className="login-container">
-      <h2>Login to your Account</h2>
-      <form onSubmit={handleSubmit} className="login-form">
-        <label htmlFor="email">Email:</label>
-        <input
-          id="email"
-          type="email"
-          value={email}
-          onChange={e => setEmail(e.target.value)}
-          required
-        />
+    <div className = "login-page">
+      <img src='./images/login-left.png' alt="login Left Pic" className="login-side-image" />
+      <div className="login-container">
+        <h2>Login to your Account</h2>
+        <form onSubmit={handleSubmit} className="login-form">
+          <label htmlFor="email">Email:</label>
+          <input
+            id="email"
+            type="email"
+            value={email}
+            onChange={e => setEmail(e.target.value)}
+            required
+          />
 
-        <label htmlFor="password">Password:</label>
-        <input
-          id="password"
-          type="password"
-          value={password}
-          onChange={e => setPassword(e.target.value)}
-          required
-        />
+          <label htmlFor="password">Password:</label>
+          <input
+            id="password"
+            type="password"
+            value={password}
+            onChange={e => setPassword(e.target.value)}
+            required
+          />
 
-        {error && <p className="error">{error}</p>}
-        <button type="submit">Login</button>
-      </form>
-      <p className="signup-text">
-        Don't have an account? <Link to="/signup">Sign up here</Link>
-      </p>
+          {error && <p className="error">{error}</p>}
+          <button type="submit">Login</button>
+        </form>
+        <p className="signup-text">
+          Don't have an account? <Link to="/signup">Sign up here</Link>
+        </p>
+      </div>
+      <img src='./images/login-right.png' alt="login right Pic" className="login-side-image" />
     </div>
   );
 }
