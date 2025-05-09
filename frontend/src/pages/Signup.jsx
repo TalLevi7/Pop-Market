@@ -15,6 +15,7 @@ function Signup() {
     e.preventDefault();
     setError('');
 
+    // Client-side validation
     if (password !== confirmPassword) {
       setError('Passwords do not match');
       return;
@@ -30,8 +31,8 @@ function Signup() {
             username,
             email,
             password,
-            phone_number: phoneNumber || null,
-          }),
+            phone_number: phoneNumber || null
+          })
         }
       );
       const data = await response.json();
@@ -39,7 +40,14 @@ function Signup() {
         setError(data.error || 'Signup failed');
         return;
       }
-      navigate('/login');
+
+      // Show success message as an alert
+      window.alert('Signed up successfully!');
+
+      // Redirect to login after alert
+      setTimeout(() => {
+        navigate('/login');
+      }, 2000); // Redirect after 2 seconds
     } catch (err) {
       console.error('Signup error:', err);
       setError('Server error, please try again.');
@@ -48,70 +56,34 @@ function Signup() {
 
   return (
     <div className="signup-page">
-      <div className="signup-wrapper">
-        <img
-          src="./images/signup-left.png"
-          alt="Sign Up Illustration"
-          className="signup-side-image"
-        />
+      <img src='./images/signup-left.png' alt="signup Left Pic" className="signup-side-image" />
+      <div className="signup-container">
+        <h2>Sign Up</h2>
+        <form onSubmit={handleSubmit} className="signup-form">
+          <label htmlFor="username">Username:</label>
+          <input id="username" type="text" value={username} onChange={e => setUsername(e.target.value)} required />
+          
+          <label htmlFor="email">Email:</label>
+          <input id="email" type="email" value={email} onChange={e => setEmail(e.target.value)} required />
+          
+          <label htmlFor="phoneNumber">Phone Number (optional):</label>
+          <input id="phoneNumber" type="tel" value={phoneNumber} onChange={e => setPhoneNumber(e.target.value)} />
 
-        <div className="signup-container">
-          <h2>Sign Up</h2>
-          <form onSubmit={handleSubmit} className="signup-form">
-            <label htmlFor="username">Username:</label>
-            <input
-              id="username"
-              type="text"
-              value={username}
-              onChange={e => setUsername(e.target.value)}
-              required
-            />
+          <label htmlFor="password">Password:</label>
+          <input id="password" type="password" value={password} onChange={e => setPassword(e.target.value)} required />
 
-            <label htmlFor="email">Email:</label>
-            <input
-              id="email"
-              type="email"
-              value={email}
-              onChange={e => setEmail(e.target.value)}
-              required
-            />
+          <label htmlFor="confirmPassword">Confirm Password:</label>
+          <input id="confirmPassword" type="password" value={confirmPassword} onChange={e => setConfirmPassword(e.target.value)} required />
 
-            <label htmlFor="phoneNumber">Phone Number (optional):</label>
-            <input
-              id="phoneNumber"
-              type="tel"
-              value={phoneNumber}
-              onChange={e => setPhoneNumber(e.target.value)}
-            />
+          {error && <p className="error">{error}</p>}
+          <button type="submit">Sign Up</button>
+        </form>
 
-            <label htmlFor="password">Password:</label>
-            <input
-              id="password"
-              type="password"
-              value={password}
-              onChange={e => setPassword(e.target.value)}
-              required
-            />
-
-            <label htmlFor="confirmPassword">Confirm Password:</label>
-            <input
-              id="confirmPassword"
-              type="password"
-              value={confirmPassword}
-              onChange={e => setConfirmPassword(e.target.value)}
-              required
-            />
-
-            {error && <p className="error">{error}</p>}
-
-            <button type="submit">Sign Up</button>
-          </form>
-
-          <p className="login-text">
-            Already have an account? <Link to="/login">Log in here</Link>
-          </p>
-        </div>
+        <p className="login-text">
+          Already have an account? <Link to="/login">Log in here</Link>
+        </p>
       </div>
+      <img src='./images/signup-right.png' alt="signup right Pic" className="signup-side-image" />
     </div>
   );
 }

@@ -1,8 +1,7 @@
-import React from "react";
-import { Routes, Route } from "react-router-dom";
+import React, { useState, useEffect, useContext } from "react";
+import { Routes, Route, Navigate } from "react-router-dom";
 import Layout from './components/Layout';
 import './styles/index.css';
-
 
 // Pages
 import About from "./pages/About";
@@ -15,27 +14,35 @@ import Market from "./pages/Market";
 import Signup from "./pages/Signup";
 import Wishlist from "./pages/Wishlist";
 
-// Components
-import Navbar from "./components/Navbar";
-import Footer from "./components/Footer";
+// Import AuthContext
+import { AuthContext } from './context/AuthContext';
 
 function App() {
+  const { isAuthenticated } = useContext(AuthContext); // Get authentication status from context
+
   return (
-    // <Navbar></Navbar>
     <Routes>
       <Route path="/" element={<Layout />}>
         <Route index element={<Home />} />
         <Route path="market" element={<Market />} />
         <Route path="catalog" element={<Catalog />} />
         <Route path="about" element={<About />} />
-        <Route path="collection" element={<Collection />} />
+
+        {/* Protect routes with conditional rendering */}
+        <Route 
+          path="collection" 
+          element={isAuthenticated ? <Collection /> : <Navigate to="/login" />} 
+        />
+        <Route 
+          path="wishlist" 
+          element={isAuthenticated ? <Wishlist /> : <Navigate to="/login" />} 
+        />
+
         <Route path="contactus" element={<ContactUs />} />
         <Route path="login" element={<Login />} />
         <Route path="signup" element={<Signup />} />
-        <Route path="wishlist" element={<Wishlist />} />
       </Route>
     </Routes>
-
   );
 }
 
