@@ -1,0 +1,91 @@
+/* src/styles/Catalog.css */
+
+body {
+  font-family: Arial, sans-serif;
+  text-align: center;
+}
+
+h1 {
+  margin: 20px 0;
+}
+
+.catalog-filters {
+  display: flex;
+  justify-content: center;
+  gap: 15px;
+  margin-bottom: 20px;
+}
+
+.catalog-filters input,
+.catalog-filters select {
+  padding: 8px;
+  font-size: 14px;
+  border-radius: 5px;
+  border: 1px solid #ccc;
+}
+
+.catalog-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+  gap: 20px;
+  padding: 20px;
+  max-width: 1200px;
+  margin: auto;
+  align-items: start;
+  justify-content: center;
+}
+
+.pop-card {
+  background: white;
+  border-radius: 10px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  padding: 15px;
+  text-align: center;
+  transition: transform 0.2s;
+
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  height: 100%;
+  max-width: 250px;
+  width: 100%;
+}
+
+.pop-card:hover {
+  transform: scale(1.05);
+}
+
+.pop-card img {
+  max-width: 100%;
+  height: 275px;
+  object-fit: contain;
+  border-radius: 5px;
+}
+
+.pop-card h3 {
+  margin-top: auto;
+  font-size: 18px;
+}
+
+.pop-card p {
+  font-size: 14px;
+  color: #666;
+  margin: 5px 0;
+}
+
+.card-actions {
+  margin-top: 10px;
+  display: flex;
+  justify-content: space-around;
+}
+
+.card-actions a {
+  text-decoration: none;
+  color: #007bff;
+  font-weight: bold;
+  transition: color 0.2s;
+}
+
+.card-actions a:hover {
+  color: #0056b3;
+}
