@@ -1,7 +1,7 @@
-// pop-market/backend/server.js
 const express = require('express');
 const cors = require('cors');
-const db = require('./db');           // now returns a promise-based pool
+const db = require('./db'); // MySQL connection
+const jwt = require('jsonwebtoken'); // For JWT token generation
 require('dotenv').config();
 
 const app = express();
@@ -43,6 +43,16 @@ app.get('/api/latest_market', async (req, res) => {
     res.status(500).json({ error: 'Database query failed' });
   }
 });
+
+// Import signup and login functionality from separate files for better code organization
+const { signup } = require('./signup');  // path to signup.js
+const { login } = require('./login');  // path to login.js
+
+// API Route to Handle User Signup
+app.post('/api/signup', signup);
+
+// API Route to Handle User Login
+app.post('/api/login', login);
 
 // Start Server
 const PORT = process.env.PORT || 5000;
