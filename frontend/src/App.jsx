@@ -1,5 +1,5 @@
-import React, { useState, useEffect, useContext } from "react";
-import { Routes, Route, Navigate } from "react-router-dom";
+import React from 'react';
+import { Routes, Route } from 'react-router-dom';
 import Layout from './components/Layout';
 import './styles/index.css';
 
@@ -14,12 +14,14 @@ import Market from "./pages/Market";
 import Signup from "./pages/Signup";
 import Wishlist from "./pages/Wishlist";
 
-// Import AuthContext
-import { AuthContext } from './context/AuthContext';
+// Components
+import Navbar from "./components/Navbar";
+import Footer from "./components/Footer";
+
+// Import PrivateRoute component
+import PrivateRoute from './components/PrivateRoute';
 
 function App() {
-  const { isAuthenticated } = useContext(AuthContext); // Get authentication status from context
-
   return (
     <Routes>
       <Route path="/" element={<Layout />}>
@@ -27,15 +29,15 @@ function App() {
         <Route path="market" element={<Market />} />
         <Route path="catalog" element={<Catalog />} />
         <Route path="about" element={<About />} />
-
-        {/* Protect routes with conditional rendering */}
+        
+        {/* Protect routes with PrivateRoute */}
         <Route 
           path="collection" 
-          element={isAuthenticated ? <Collection /> : <Navigate to="/login" />} 
+          element={<PrivateRoute element={<Collection />} />} 
         />
         <Route 
           path="wishlist" 
-          element={isAuthenticated ? <Wishlist /> : <Navigate to="/login" />} 
+          element={<PrivateRoute element={<Wishlist />} />} 
         />
 
         <Route path="contactus" element={<ContactUs />} />

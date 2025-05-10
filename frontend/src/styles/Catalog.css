@@ -89,3 +89,26 @@ h1 {
 .card-actions a:hover {
   color: #0056b3;
 }
+
+/* Styling for the Add to Collection button */
+.addtocollection-button {
+  background-color: #ffcc00; /* Use a color that matches your design */
+  color: white;
+  font-size: 16px; /* Size of the text */
+  padding: 10px 5px; /* Adjust padding to make the button more reasonable in size */
+  border: none;
+  border-radius: 5px; /* Rounded corners */
+  cursor: pointer;
+  max-width: 100px; /* Maximum width to keep the button from becoming too wide */
+  transition: background-color 0.3s ease, transform 0.3s ease; /* Smooth transitions for hover */
+}
+
+.addtocollection-button:hover {
+  background-color: #ffb300; /* Darken color slightly on hover */
+  transform: scale(1.05); /* Slight scale increase on hover */
+}
+
+/* Optional: Add focus state to improve accessibility */
+.addtocollection-button:focus {
+  outline: 2px solid #ffcc00; /* Focus state for better accessibility */
+}

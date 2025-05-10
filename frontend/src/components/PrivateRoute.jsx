@@ -1,22 +1,16 @@
-import React from 'react';
-import { Route, Navigate } from 'react-router-dom';
+import React, { useContext } from 'react';
+import { Navigate } from 'react-router-dom';
+import { AuthContext } from '../context/AuthContext'; // Import AuthContext
 
-// Protected Route Component for React Router v6
-const PrivateRoute = ({ element: Component, ...rest }) => {
-  const token = localStorage.getItem('token'); // Check if the user is authenticated
+const PrivateRoute = ({ element }) => {
+  const { isAuthenticated } = useContext(AuthContext); // Get authentication status from context
 
-  return (
-    <Route
-      {...rest}
-      element={
-        token ? (
-          <Component /> // If the user is authenticated, render the protected component
-        ) : (
-          <Navigate to="/login" /> // If not authenticated, redirect to login
-        )
-      }
-    />
-  );
+  if (!isAuthenticated) {
+    // Redirect to login page if not authenticated
+    return <Navigate to="/login" />;
+  }
+
+  return element; // Allow access to the element if authenticated
 };
 
 export default PrivateRoute;
