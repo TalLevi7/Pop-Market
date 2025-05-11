@@ -1,67 +1,67 @@
-import React, { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';  // For redirection
-import '../styles/Collection.css';
+// src/pages/Collection.jsx
+import React, { useEffect, useState } from "react";
+import "../styles/Collection.css";
 
-function Collection() {
-  const [collectionData, setCollectionData] = useState([]);
-  const [error, setError] = useState('');
-  const navigate = useNavigate();
+export default function Collection() {
+  const [items, setItems]   = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError]     = useState("");
 
-  // Fetch collection data for the logged-in user
   useEffect(() => {
-    const token = localStorage.getItem('token');
-    if (!token) {
-      navigate('/login');  // Redirect to login if no token is found
-    } else {
-      fetch(`${import.meta.env.VITE_API_URL}/api/collection`, {
-        method: 'GET',
-        headers: {
-          'Authorization': `Bearer ${token}`, // Sending the token as Authorization header
-        },
+    const API_URL = import.meta.env.VITE_API_URL || "http://localhost:5000";
+    const token   = localStorage.getItem("token");
+
+    fetch(`${API_URL}/api/collection`, {
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+    })
+      .then(async res => {
+        if (!res.ok) {
+          const body = await res.json().catch(() => ({}));
+          throw new Error(body.error || "Failed to load collection");
+        }
+        return res.json();
       })
-        .then(res => res.json())
-        .then(data => {
-          // If the response has an error field, set it to display
-          if (data.error) {
-            setError(data.error);
-          } else {
-            // If the collection is empty, we don't want to show the error message
-            if (Array.isArray(data) && data.length === 0) {
-              setCollectionData([]);
-            } else {
-              setCollectionData(data); // Set collection data if successful
-            }
-          }
-        })
-        .catch(err => {
-          console.error('Error fetching collection:', err);
-          setError('Failed to load collection. Please try again.');  // Show generic error if fetch fails
-        });
-    }
-  }, [navigate]);
+      .then(data => setItems(data))
+      .catch(err => setError(err.message))
+      .finally(() => setLoading(false));
+  }, []);
+
+  if (loading) return (
+    <div className="collection">
+      <p>Loading your collection…</p>
+    </div>
+  );
+  if (error) return (
+    <div className="collection error">
+      <p>{error}</p>
+    </div>
+  );
 
   return (
-    <div className="collection-page">
-      <h1>Your Collection</h1>
-
-      {error && <p className="error">{error}</p>} {/* Display error if any */}
-
-      {collectionData.length === 0 ? (
-        <p>Your collection is empty. Add some Funko Pops!</p>
-      ) : (
-        <div className="collection-grid">
-          {collectionData.map(item => (
-            <div className="pop-card" key={item.collection_id}>
-              <img src={item.picture} alt={item.pop_name} />
-              <h3>{item.pop_name}</h3>
-              <p><strong>Acquired:</strong> {new Date(item.acquired_date).toLocaleDateString()}</p>
-              <p><strong>Category:</strong> {item.category}</p>
-            </div>
-          ))}
-        </div>
-      )}
+    <div className="collection">
+      <h2>Your Collection</h2>
+      {items.length === 0
+        ? <p className="empty">Your collection is empty. Add some Funko Pops!</p>
+        : <div className="grid">
+            {items.map(item => (
+              <div key={item.collection_id} className="card">
+                <img src={item.picture} alt={item.pop_name} />
+                <div className="info">
+                  <h3>{item.pop_name}</h3>
+                  <p>{item.category} – {item.sub_category}</p>
+                  <small>
+                    Acquired:{" "}
+                    {new Date(item.acquired_date)
+                      .toLocaleDateString()}
+                  </small>
+                </div>
+              </div>
+            ))}
+          </div>
+      }
     </div>
   );
 }
-
-export default Collection;
