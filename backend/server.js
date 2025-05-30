@@ -3,6 +3,8 @@ const express = require('express');
 const cors = require('cors');
 const db = require('./db');               // your MySQL connection
 const jwt = require('jsonwebtoken');      // for JWT verification
+const authenticate = require('./authenticate'); // your auth middleware
+
 require('dotenv').config();
 
 const app = express();
@@ -10,45 +12,33 @@ app.use(express.json());
 app.use(cors());
 
 // ---------------------
-// Authentication Middleware
-// ---------------------
-function authenticate(req, res, next) {
-  const authHeader = req.headers.authorization;
-  if (!authHeader || !authHeader.startsWith('Bearer ')) {
-    return res.status(401).json({ error: 'Missing or invalid Authorization header' });
-  }
-
-  const token = authHeader.split(' ')[1];
-  try {
-    // assuming your tokens were signed with { id: userId }
-    const decoded = jwt.verify(token, process.env.JWT_SECRET);
-    req.user = { id: decoded.id };
-    next();
-  } catch (err) {
-    console.error('JWT verification failed:', err);
-    return res.status(401).json({ error: 'Invalid or expired token' });
-  }
-}
-
-// ---------------------
 // Routes
 // ---------------------
+const catalogRoutes = require('./catalog');
+const collectionRoutes = require('./collection');
+const wishlistRoutes   = require('./wishlist');
+
+app.use('/api/catalog', catalogRoutes);
+app.use('/api/collection', collectionRoutes);
+app.use('/api/wishlist', wishlistRoutes);
+
+
+
 
 // Root Route (for testing)
 app.get('/', (req, res) => {
   res.send('Pop Market API is running!');
 });
 
-// Fetch entire Pop Catalog
-app.get('/api/catalog', async (req, res) => {
-  try {
-    const [rows] = await db.query('SELECT * FROM pop_catalog');
-    res.json(rows);
-  } catch (err) {
-    console.error('Error fetching catalog:', err);
-    res.status(500).json({ error: 'Database query failed' });
-  }
-});
+
+// Import signup and login handlers
+const { signup } = require('./signup');
+const { login } = require('./login');
+// Public auth routes
+app.post('/api/signup', signup);
+app.post('/api/login', login);
+
+
 
 // Fetch 3 latest active items in Market
 app.get('/api/latest_market', async (req, res) => {
@@ -69,38 +59,8 @@ app.get('/api/latest_market', async (req, res) => {
   }
 });
 
-// Protected: Fetch the logged-in user's personal collection
-app.get('/api/collection', authenticate, async (req, res) => {
-  const userId = req.user.id;
-  try {
-    const [rows] = await db.query(
-      `SELECT 
-         pc.collection_id,
-         pc.acquired_date,
-         p.pop_id,
-         p.pop_name,
-         p.category,
-         p.sub_category,
-         p.picture
-       FROM personal_collection pc
-       JOIN pop_catalog p ON pc.pop_id = p.pop_id
-       WHERE pc.user_id = ?`,
-      [userId]
-    );
-    res.json(rows);
-  } catch (err) {
-    console.error('Error fetching collection:', err);
-    res.status(500).json({ error: 'Database query failed' });
-  }
-});
 
-// Import signup and login handlers
-const { signup } = require('./signup');
-const { login } = require('./login');
 
-// Public auth routes
-app.post('/api/signup', signup);
-app.post('/api/login', login);
 
 // ---------------------
 // Start Server
