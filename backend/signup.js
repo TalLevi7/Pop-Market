@@ -9,7 +9,7 @@ const signup = async (req, res) => {
     return res.status(400).json({ error: 'All fields are required' });
   }
 
-  // Check if the email already exists
+  // Check if the email or username already exist
   try {
     const [existingEmail] = await db.query('SELECT * FROM users WHERE email = ?', [email]);
     const [existingUsername] = await db.query('SELECT * FROM users WHERE username = ?', [username]);
