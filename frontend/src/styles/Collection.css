@@ -1,55 +1,137 @@
-/* src/pages/Collection.css */
+/* src/styles/Collection.css */
+
 .collection {
-  max-width: 1000px;
-  margin: 1rem auto;
-  padding: 0 1rem;
-  font-family: sans-serif;
-}
-.collection h2 {
-  text-align: center;
-  margin-bottom: 1rem;
-}
-.collection.error p {
-  color: red;
+  font-family: Arial, sans-serif;
   text-align: center;
 }
-.collection .empty {
-  text-align: center;
-  color: #666;
+
+.collection h1 {
+  margin: 20px 0;
 }
-.collection .grid {
+
+.collection .catalog-filters {
+  display: flex;
+  justify-content: center;
+  gap: 15px;
+  margin-bottom: 20px;
+}
+
+.collection .catalog-filters input,
+.collection .catalog-filters select {
+  padding: 8px;
+  font-size: 14px;
+  border-radius: 5px;
+  border: 1px solid #ccc;
+}
+
+.collection .catalog-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
-  gap: 1rem;
+  grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+  gap: 20px;
+  padding: 20px;
+  max-width: 1200px;
+  margin: auto;
+  align-items: start;
+  justify-content: center;
 }
-.collection .card {
-  border: 1px solid #ddd;
-  border-radius: 8px;
-  overflow: hidden;
-  background: #fff;
-  transition: transform .2s;
-}
-.collection .card:hover {
-  transform: scale(1.03);
-}
-.collection .card img {
+
+.collection .pop-card {
+  position: relative;
+  background: white;
+  border-radius: 10px;
+  box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+  padding: 15px;
+  text-align: center;
+  transition: transform 0.2s;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  height: 100%;
+  max-width: 250px;
   width: 100%;
-  height: 180px;
-  object-fit: cover;
 }
-.collection .card .info {
-  padding: .5rem;
+
+.collection .pop-card:hover {
+  transform: scale(1.05);
 }
-.collection .card h3 {
-  margin: 0 0 .25rem;
-  font-size: 1.1rem;
+
+.collection .pop-card img {
+  max-width: 100%;
+  height: 275px;
+  object-fit: contain;
+  border-radius: 5px;
 }
-.collection .card p {
-  margin: 0 .25rem 0.5rem;
-  font-size: .9rem;
-  color: #555;
+
+.collection .pop-card h3 {
+  margin-top: auto;
+  font-size: 18px;
 }
-.collection .card small {
+
+.collection .pop-card p {
+  font-size: 14px;
+  color: #666;
+  margin: 5px 0;
+}
+
+.collection .pop-card small {
   color: #888;
-  font-size: .75rem;
+  font-size: 0.75rem;
+}
+
+.collection .card-actions {
+  margin-top: 10px;
+  display: flex;
+  justify-content: space-around;
+}
+
+/* Generic unstyled buttons */
+.collection .card-actions button:not(.collectiontomarket-button):not(.removefromcollection-button) {
+  background: none;
+  border: none;
+  color: #007bff;
+  font-weight: bold;
+  cursor: pointer;
+  transition: color 0.2s;
+}
+
+.collection .card-actions button:not(.collectiontomarket-button):not(.removefromcollection-button):hover {
+  color: #0056b3;
+}
+
+/* Sell on market button (matches catalog sellonmarket-button) */
+.collection .card-actions button.collectiontomarket-button {
+  background-color: #ffcc00;
+  color: white;
+  font-size: 16px;
+  padding: 10px 5px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  max-width: 100px;
+  transition: background-color 0.3s ease, transform 0.3s ease;
+}
+
+.collection .card-actions button.collectiontomarket-button:hover {
+  background-color: #ffb300;
+  transform: scale(1.05);
+  color: white;
+}
+
+/* Remove from collection button (matches catalog addtocollection-button) */
+.collection .card-actions button.removefromcollection-button {
+  background-color: #ff4800;
+  color: white;
+  font-size: 16px;
+  padding: 10px 5px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  max-width: 100px;
+  transition: background-color 0.3s ease, transform 0.3s ease;
+}
+
+.collection .card-actions button.removefromcollection-button:hover {
+  background-color: #ff4800ce;
+  transform: scale(1.05);
+  color: white;
 }
