@@ -1,0 +1,131 @@
+/* src/styles/Collection.css */
+/* Scoped to .collection but otherwise identical to Catalog.css */
+
+.wishlist {
+  font-family: Arial, sans-serif;
+  text-align: center;
+}
+
+.wishlist h1 {
+  margin: 20px 0;
+}
+
+.wishlist .catalog-filters {
+  display: flex;
+  justify-content: center;
+  gap: 15px;
+  margin-bottom: 20px;
+}
+
+.wishlist .catalog-filters input,
+.wishlist .catalog-filters select {
+  padding: 8px;
+  font-size: 14px;
+  border-radius: 5px;
+  border: 1px solid #ccc;
+}
+
+.wishlist .catalog-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+  gap: 20px;
+  padding: 20px;
+  max-width: 1200px;
+  margin: auto;
+  align-items: start;
+  justify-content: center;
+}
+
+.wishlist .pop-card {
+  background: white;
+  border-radius: 10px;
+  box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+  padding: 15px;
+  text-align: center;
+  transition: transform 0.2s;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  height: 100%;
+  max-width: 250px;
+  width: 100%;
+}
+
+.wishlist .pop-card:hover {
+  transform: scale(1.05);
+}
+
+.wishlist .pop-card img {
+  max-width: 100%;
+  height: 275px;
+  object-fit: contain;
+  border-radius: 5px;
+}
+
+.wishlist .pop-card h3 {
+  margin-top: auto;
+  font-size: 18px;
+}
+
+.wishlist .pop-card p {
+  font-size: 14px;
+  color: #666;
+  margin: 5px 0;
+}
+
+.wishlist .pop-card small {
+  color: #888;
+  font-size: 0.75rem;
+}
+
+.wishlist .card-actions {
+  margin-top: 10px;
+  display: flex;
+  justify-content: space-around;
+}
+
+/* Match catalog’s Add-to-Collection button */
+.wishlisttocollection-button {
+  background-color: #ffcc00;
+  color: white;
+  font-size: 16px;
+  padding: 5px 5px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  max-width: 100px;
+  max-height: 75px;
+  transition: background-color 0.3s ease, transform 0.3s ease;
+}
+
+.wishlisttocollection-button:hover {
+  background-color: #ffb300;
+  transform: scale(1.05);
+}
+
+.wishlisttocollection-button:focus {
+  outline: 2px solid #ffcc00;
+}
+
+/* Match catalog’s Add-to-Collection button */
+.removefromwishlist-button {
+  background-color: #ff4800;
+  color: white;
+  font-size: 16px;
+  padding: 5px 5px;
+  max-width: 100px;
+  max-height: 75px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background-color 0.3s ease, transform 0.3s ease;
+}
+
+.removefromwishlist-button:hover {
+  background-color: #ff4800ce;
+  transform: scale(1.05);
+}
+
+.removefromwishlist-button:focus {
+  outline: 2px solid #ff4800;
+}
