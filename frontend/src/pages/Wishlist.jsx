@@ -82,6 +82,8 @@ const handleAddToCollection = async (popId, popName) => {
       // Update local state so duplicates are blocked next time
       setCollectionIds(prev => [...prev, popId]);
       alert(`${popName} has been added to your collection`);
+      // items added to collection from wishlist, are deleted from wishlist
+      handleRemove(popId,popName,1);
     } else {
       console.error('Failed to add item');
       let errText = 'Failed to add to collection';
@@ -97,7 +99,7 @@ const handleAddToCollection = async (popId, popName) => {
 
 
   // Remove from wishlist
-const handleRemove = async (popId, popName) => {
+const handleRemove = async (popId, popName, tocollection = 0) => {
   const token   = localStorage.getItem('token');
   if (!token) {
     alert(`Login required to remove ${popName}`);
@@ -116,7 +118,9 @@ const handleRemove = async (popId, popName) => {
   if (res.ok) {
     // remove it from local state
     setItems(prev => prev.filter(i => i.pop_id !== popId));
-    alert(`${popName} has been deleted from your wishlist`);
+    if (tocollection == 0) {
+      alert(`${popName} has been deleted from your wishlist`);
+    }
   } else {
     console.error('Failed to remove item');
   }
