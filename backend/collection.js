@@ -7,7 +7,6 @@ const authenticate = require('./authenticate');
 // GET /api/collection
 router.get('/', authenticate, async (req, res) => {
   const userId = req.user.id; // assume authenticate sets req.user
-  console.log("\n collection.js 10: ", userId)
   try {
     const [rows] = await db.execute(
       `SELECT 
@@ -31,20 +30,51 @@ router.get('/', authenticate, async (req, res) => {
   }
 });
 
+
 // POST /api/collection — add a new pop to the user's collection
 router.post('/', authenticate, async (req, res) => {
-  const { pop_id } = req.body;
-  db.query(
-    'INSERT INTO personal_collection (user_id, pop_id) VALUES (?, ?)',
-    [req.user.id, pop_id],
-    (err) => {
-      if (err) {
-        // optional: handle duplicate entry if needed
-        return res.status(500).json({ error: 'Database error' });
-      }
-      res.status(201).json({ message: 'Added to collection' });
-    }
-  );
+  const userId = req.user.id;
+  const { pop_id: popId } = req.body;
+
+  try {
+    const [result] = await db.execute(
+      `INSERT INTO personal_collection (user_id, pop_id) VALUES (?, ?)`,
+      [userId, popId]
+    );
+
+    // success
+    res.status(201).json({ message: 'Added to collection' });
+  } catch (err) {
+    console.error('Error adding to collection:', err);
+    res.status(500).json({ error: 'Could not add item' });
+  }
 });
+
+
+// DELETE /api/collection/:id
+router.delete('/:id', authenticate, async (req, res) => {
+  const userId       = req.user.id;
+  const collectionId = req.params.id;
+
+  try {
+    const [result] = await db.execute(
+      `DELETE FROM personal_collection
+       WHERE collection_id = ? AND user_id = ?`,
+      [collectionId, userId]
+    );
+
+    if (result.affectedRows === 0) {
+      // nothing was deleted — either wrong ID or not this user's item
+      return res.status(404).json({ error: 'Item not found in your collection' });
+    }
+
+    // success
+    res.json({ message: 'Removed from collection' });
+  } catch (err) {
+    console.error('Error removing collection item:', err);
+    res.status(500).json({ error: 'Could not remove item' });
+  }
+});
+
 
 module.exports = router;

@@ -12,7 +12,7 @@ module.exports = function authenticate(req, res, next) {
     const decoded = jwt.verify(token, process.env.JWT_SECRET);
     // ← use decoded.userId, since that's what we signed above
     req.user = { id: decoded.user_id };
-    console.log("\nauthenticate.js 15: \n", decoded)
+    // console.log("\nauthenticate.js 15: \n", decoded)
     next();
   } catch (err) {
     console.error('JWT verification failed:', err);

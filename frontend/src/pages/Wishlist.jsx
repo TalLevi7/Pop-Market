@@ -1,4 +1,4 @@
-// src/pages/wishlist.jsx
+// src/pages/Wishlist.jsx
 import React, { useEffect, useState } from 'react';
 import '../styles/Wishlist.css';
 
@@ -9,12 +9,12 @@ export default function Wishlist() {
   const [search, setSearch]     = useState('');
   const [filterCategory, setFilterCategory] = useState('');
   const [filterSub, setFilterSub]           = useState('');
-
+  const [collectionIds, setCollectionIds]   = useState([]);       // will hold pop_id numbers already in the user’s collection
   const API_URL = import.meta.env.VITE_API_URL;
 
   // Fetch the user's wishlist
   useEffect(() => {
-    const token   = localStorage.getItem('token');
+    const token = localStorage.getItem('token');
     fetch(`${API_URL}/api/wishlist`, {
       headers: {
         'Content-Type': 'application/json',
@@ -31,16 +31,44 @@ export default function Wishlist() {
       .then(data => setItems(data))
       .catch(err => setError(err.message))
       .finally(() => setLoading(false));
-  }, []);
+  }, [API_URL]);
 
-  // adds item from wishlist to collection    
-  const handleAddToCollection = async (popId, popName) => {
+    // Load user’s collectionIds (pop_id) on mount (requires auth)
+    useEffect(() => {
+      const token = localStorage.getItem('token');
+      if (!token) return;
+      fetch(`${API_URL}/api/collection`, {
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${token}`
+        }
+      })
+        .then(r => {
+          if (!r.ok) throw new Error('Failed to load collection');
+          return r.json();
+        })
+        .then(items => {
+          // items: [ { collection_id, acquired_date, pop_id, pop_name, … }, … ]
+          const popIds = items.map(item => item.pop_id);
+          setCollectionIds(popIds);
+        })
+        .catch(console.error);
+    }, [API_URL]);
+
+  // Adds item from wishlist to collection
+const handleAddToCollection = async (popId, popName) => {
     const token = localStorage.getItem('token');
     if (!token) {
       alert(`Login required to add ${popName}`);
-      navigate('/login');
+      return navigate('/login');
+    }
+
+    // Prevent duplicates
+    if (collectionIds.includes(popId)) {
+      alert(`${popName} is already in your collection`);
       return;
     }
+
     const res = await fetch(`${API_URL}/api/collection`, {
       method: 'POST',
       headers: {
@@ -49,30 +77,50 @@ export default function Wishlist() {
       },
       body: JSON.stringify({ pop_id: popId })
     });
-    if (!res.ok) {
-      const err = await res.json().catch(() => ({}));
-      alert(err.error || 'Failed to add to collection');
+
+    if (res.ok) {
+      // Update local state so duplicates are blocked next time
+      setCollectionIds(prev => [...prev, popId]);
+      alert(`${popName} has been added to your collection`);
     } else {
-      alert(`${popName} added to collection`);
+      console.error('Failed to add item');
+      let errText = 'Failed to add to collection';
+      try {
+        const errJson = await res.json();
+        errText = errJson.error || errText;
+      } catch {
+        /* ignore parsing failure */
+      }
+      alert(errText);
     }
   };
 
 
-  // const handleRemove = async id => {
-  //   const token   = localStorage.getItem('token');
-  //   const res = await fetch(`${API_URL}/api/collection/${id}`, {
-  //     method: 'DELETE',
-  //     headers: {
-  //       'Content-Type': 'application/json',
-  //       Authorization: `Bearer ${token}`,
-  //     },
-  //   });
-  //   if (res.ok) {
-  //     setItems(prev => prev.filter(i => i.collection_id !== id));
-  //   } else {
-  //     console.error('Failed to remove item');
-  //   }
-  // };
+  // Remove from wishlist
+const handleRemove = async (popId, popName) => {
+  const token   = localStorage.getItem('token');
+  if (!token) {
+    alert(`Login required to remove ${popName}`);
+    return;
+  }  
+
+  // call DELETE
+  const res = await fetch(`${API_URL}/api/wishlist/${popId}`, {
+    method: 'DELETE',
+    headers: {
+      'Content-Type': 'application/json',
+      Authorization: `Bearer ${token}`,
+    },
+  });
+
+  if (res.ok) {
+    // remove it from local state
+    setItems(prev => prev.filter(i => i.pop_id !== popId));
+    alert(`${popName} has been deleted from your wishlist`);
+  } else {
+    console.error('Failed to remove item');
+  }
+};
 
   const categories    = [...new Set(items.map(i => i.category))];
   const subCategories = [...new Set(items.map(i => i.sub_category))];
@@ -110,25 +158,26 @@ export default function Wishlist() {
         ? <p className="empty">No items match your filters.</p>
         : <div className="catalog-grid">
             {filtered.map(item => (
-              <div key={item.collection_id} className="pop-card">
+              <div key={item.wish_id} className="pop-card">
                 <img src={item.picture} alt={item.pop_name} />
                 <h3>{item.pop_name}</h3>
+                <h4>{item.serial_number}</h4>
                 <p>{item.category} – {item.sub_category}</p>
                 <small>
-                  Acquired: {new Date(item.acquired_date).toLocaleDateString()}
+                  Added to wishlist: {new Date(item.added_date).toLocaleDateString()}
                 </small>
                 <div className="card-actions">
                   <button
                     className="wishlisttocollection-button"
-                    onClick={() => handleAddToCollection(id, pop.pop_name)}
+                    onClick={() => handleAddToCollection(item.pop_id, item.pop_name)}
                   >
                     Add to collection
                   </button>
                   <button
                     className="removefromwishlist-button"
-                    onClick={() => handleRemove(item.collection_id)}
+                    onClick={() => handleRemove(item.pop_id, item.pop_name)}
                   >
-                    Remove from wishlist
+                    Remove this item
                   </button>
                 </div>
               </div>

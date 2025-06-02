@@ -33,21 +33,31 @@ export default function Collection() {
       .finally(() => setLoading(false));
   }, []);
 
-  const handleRemove = async id => {
-    const token   = localStorage.getItem('token');
-    const res = await fetch(`${API_URL}/api/collection/${id}`, {
-      method: 'DELETE',
-      headers: {
-        'Content-Type': 'application/json',
-        Authorization: `Bearer ${token}`,
-      },
-    });
-    if (res.ok) {
-      setItems(prev => prev.filter(i => i.collection_id !== id));
-    } else {
-      console.error('Failed to remove item');
-    }
-  };
+const handleRemove = async id => {
+  const token   = localStorage.getItem('token');
+  // 1. find the pop’s name from state
+  const removedItem = items.find(i => i.collection_id === id);
+  const popName     = removedItem?.pop_name || 'Item';
+
+  // 2. call DELETE
+  const res = await fetch(`${API_URL}/api/collection/${id}`, {
+    method: 'DELETE',
+    headers: {
+      'Content-Type': 'application/json',
+      Authorization: `Bearer ${token}`,
+    },
+  });
+
+  if (res.ok) {
+    // 3. remove it from local state
+    setItems(prev => prev.filter(i => i.collection_id !== id));
+    // 4. show your alert
+    alert(`${popName} has been deleted from your collection`);
+  } else {
+    console.error('Failed to remove item');
+  }
+};
+
 
   const categories    = [...new Set(items.map(i => i.category))];
   const subCategories = [...new Set(items.map(i => i.sub_category))];

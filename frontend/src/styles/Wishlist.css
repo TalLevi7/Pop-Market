@@ -1,5 +1,4 @@
-/* src/styles/Collection.css */
-/* Scoped to .collection but otherwise identical to Catalog.css */
+/* src/styles/Wishlist.css */
 
 .wishlist {
   font-family: Arial, sans-serif;
@@ -84,48 +83,54 @@
   justify-content: space-around;
 }
 
-/* Match catalog’s Add-to-Collection button */
-.wishlisttocollection-button {
-  background-color: #ffcc00;
+/* Only reset unstyled buttons — leave our custom backgrounds intact */
+.wishlist .card-actions button:not(.wishlisttocollection-button):not(.removefromwishlist-button) {
+  background: none;
+  border: none;
+  color: #007bff;
+  font-weight: bold;
+  cursor: pointer;
+  transition: color 0.2s;
+}
+
+.wishlist .card-actions button:not(.wishlisttocollection-button):not(.removefromwishlist-button):hover {
+  color: #0056b3;
+}
+
+/* “Add to collection” button */
+.wishlist .card-actions button.wishlisttocollection-button {
+  background-color: #00aeff;
   color: white;
   font-size: 16px;
-  padding: 5px 5px;
+  padding: 10px 5px;
   border: none;
   border-radius: 5px;
   cursor: pointer;
   max-width: 100px;
-  max-height: 75px;
   transition: background-color 0.3s ease, transform 0.3s ease;
 }
 
-.wishlisttocollection-button:hover {
-  background-color: #ffb300;
+.wishlist .card-actions button.wishlisttocollection-button:hover {
+  background-color: #00aeffde;
+  color: white;
   transform: scale(1.05);
 }
 
-.wishlisttocollection-button:focus {
-  outline: 2px solid #ffcc00;
-}
-
-/* Match catalog’s Add-to-Collection button */
-.removefromwishlist-button {
+/* “Remove from wishlist” button */
+.wishlist .card-actions button.removefromwishlist-button {
   background-color: #ff4800;
   color: white;
   font-size: 16px;
-  padding: 5px 5px;
-  max-width: 100px;
-  max-height: 75px;
+  padding: 10px 5px;
   border: none;
   border-radius: 5px;
   cursor: pointer;
+  max-width: 100px;
   transition: background-color 0.3s ease, transform 0.3s ease;
 }
 
-.removefromwishlist-button:hover {
+.wishlist .card-actions button.removefromwishlist-button:hover {
   background-color: #ff4800ce;
   transform: scale(1.05);
 }
 
-.removefromwishlist-button:focus {
-  outline: 2px solid #ff4800;
-}
