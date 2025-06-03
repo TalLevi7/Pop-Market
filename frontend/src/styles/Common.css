@@ -21,6 +21,13 @@
     height: 80px;
 }
 
+.navbar-greeting {
+  margin-right: 0.5rem; /* adjust as needed */
+  font-size: large;
+  font-weight: bold;
+  color: #3700ff; /* or any color you prefer */
+}
+
 .logo {
     height: 100%;
     width: auto;

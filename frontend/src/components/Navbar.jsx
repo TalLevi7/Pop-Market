@@ -4,8 +4,48 @@ import { AuthContext } from '../context/AuthContext'; // Import AuthContext
 import '../styles/Common.css'; // make sure to create this CSS file
 
 function Navbar() {
-  const { isAuthenticated, logout } = useContext(AuthContext); // Get isAuthenticated from AuthContext
+  const { logout } = useContext(AuthContext); // Get isAuthenticated from AuthContext
   const navigate = useNavigate();
+
+  // Takes a token string, returns { user_id, username, exp, ... } or null.
+  const decodeJWTPayload = (token) => {
+    try {
+      const base64Url = token.split('.')[1]; // second segment = payload
+      const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
+      const json = atob(base64);
+      return JSON.parse(json);
+    } catch (err) {
+      return null;
+    }
+  };
+
+    // ─── On every render, read token from localStorage ───────────────────
+  const token = localStorage.getItem('token');
+  let username = null;
+  let isAuthenticated = false;
+
+  if (token) {
+    const payload = decodeJWTPayload(token);
+    if (
+      payload &&
+      payload.username &&
+      typeof payload.exp === 'number'
+    ) {
+      // Check if token is expired (exp is in seconds)
+      const nowSec = Math.floor(Date.now() / 1000);
+      if (payload.exp > nowSec) {
+        isAuthenticated = true;
+        username = payload.username;
+      } else {
+        // Token expired → remove it
+        localStorage.removeItem('token');
+      }
+    } else {
+      // Malformed token → remove it
+      localStorage.removeItem('token');
+    }
+  }
+
 
   const handleLogout = () => {
     logout(); // Logout function from AuthContext
@@ -43,10 +83,15 @@ function Navbar() {
         </li>
       </ul>
       <div className="auth-buttons">
-        {isAuthenticated ? (
-          <button className="logout" onClick={handleLogout}>
-            Log Out
-          </button>
+        {isAuthenticated && username ? (
+          <>
+            <span className="navbar-greeting">
+              Hello,&nbsp;{username} 😊
+            </span>
+            <button className="logout" onClick={handleLogout}>
+              Log Out
+            </button>
+          </>
         ) : (
           <Link to="/login">
             <button className="login">Log In</button>
