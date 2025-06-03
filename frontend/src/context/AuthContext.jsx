@@ -1,34 +1,46 @@
+// src/context/AuthContext.jsx
 import React, { createContext, useState, useEffect } from 'react';
 
 // Create context
-export const AuthContext = createContext();
+export const AuthContext = createContext({
+  isAuthenticated: false,
+  isLoading: true,
+  login: (_token) => {},
+  logout: () => {},
+});
 
 // Provider component
 export const AuthProvider = ({ children }) => {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
 
-  // Check for the token on initial load (page refresh)
+  // On mount, check if a token exists in localStorage
   useEffect(() => {
     const token = localStorage.getItem('token');
+
     if (token) {
-      setIsAuthenticated(true); // If a token exists, set the user as authenticated
+      // If you want to verify expiration, decode here.
+      setIsAuthenticated(true);
     } else {
-      setIsAuthenticated(false); // Otherwise, the user is not authenticated
+      setIsAuthenticated(false);
     }
+
+    // Finished checking localStorage
+    setIsLoading(false);
   }, []);
 
   const login = (token) => {
-    localStorage.setItem('token', token); // Store token in localStorage
-    setIsAuthenticated(true); // Set the user as authenticated
+    localStorage.setItem('token', token);
+    setIsAuthenticated(true);
   };
 
   const logout = () => {
-    localStorage.removeItem('token'); // Remove the token from localStorage
-    setIsAuthenticated(false); // Set the user as not authenticated
+    localStorage.removeItem('token');
+    setIsAuthenticated(false);
   };
 
   return (
-    <AuthContext.Provider value={{ isAuthenticated, login, logout }}>
+    <AuthContext.Provider value={{ isAuthenticated, isLoading, login, logout }}>
       {children}
     </AuthContext.Provider>
   );

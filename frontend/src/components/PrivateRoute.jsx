@@ -1,16 +1,23 @@
+// src/components/PrivateRoute.jsx
 import React, { useContext } from 'react';
 import { Navigate } from 'react-router-dom';
-import { AuthContext } from '../context/AuthContext'; // Import AuthContext
+import { AuthContext } from '../context/AuthContext';
 
 const PrivateRoute = ({ element }) => {
-  const { isAuthenticated } = useContext(AuthContext); // Get authentication status from context
+  const { isAuthenticated, isLoading } = useContext(AuthContext);
 
-  if (!isAuthenticated) {
-    // Redirect to login page if not authenticated
-    return <Navigate to="/login" />;
+  // 1. While we’re still checking localStorage, render nothing (or a spinner).
+  if (isLoading) {
+    return <div>Loading…</div>;
   }
 
-  return element; // Allow access to the element if authenticated
+  // 2. Once loading is done: if not authenticated, redirect to /login
+  if (!isAuthenticated) {
+    return <Navigate to="/login" replace />;
+  }
+
+  // 3. Otherwise, render the protected element
+  return element;
 };
 
 export default PrivateRoute;
