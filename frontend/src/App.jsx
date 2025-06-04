@@ -20,6 +20,7 @@ import Footer from "./components/Footer";
 
 // Import PrivateRoute component
 import PrivateRoute from './components/PrivateRoute';
+import NewListing from './pages/NewListing';
 
 function App() {
   return (
@@ -38,6 +39,10 @@ function App() {
         <Route 
           path="wishlist" 
           element={<PrivateRoute element={<Wishlist />} />} 
+        />
+        <Route 
+          path="newlisting" 
+          element={<PrivateRoute element={<NewListing />} />} 
         />
 
         <Route path="contactus" element={<ContactUs />} />
