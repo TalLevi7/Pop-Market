@@ -17,10 +17,12 @@ app.use(cors());
 const catalogRoutes = require('./catalog');
 const collectionRoutes = require('./collection');
 const wishlistRoutes   = require('./wishlist');
+const marketRoutes   = require('./market');
 
 app.use('/api/catalog', catalogRoutes);
 app.use('/api/collection', collectionRoutes);
 app.use('/api/wishlist', wishlistRoutes);
+app.use('/api/market', marketRoutes);
 
 
 
